@@ -9,7 +9,13 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "typescript": "^5.0.2",
-    "vite": "^4.4.5"
+    "typescript": "^5.2.2",
+    "vite": "^4.4.11"
+  },
+  "dependencies": {
+    "@tensorflow/tfjs-backend-webgl": "4.12.0-rc.0",
+    "@tensorflow/tfjs-core": "4.12.0-rc.0",
+    "@tensorflow/tfjs-data": "4.12.0-rc.0",
+    "@tensorflow/tfjs-layers": "4.12.0-rc.0"
   }
 }
