@@ -4,8 +4,8 @@ import * as tf from "@tensorflow/tfjs-core";
 import * as tfData from "@tensorflow/tfjs-data";
 import * as tfLayers from "@tensorflow/tfjs-layers";
 
-const csvUrl =
-  "https://storage.googleapis.com/tfjs-examples/multivariate-linear-regression/data/boston-housing-train.csv";
+const trainingUrl = "/wdbc-train.csv";
+const testingUrl = "/wdbc-test.csv";
 
 interface DataType extends tf.TensorContainerObject {
   xs: tf.Tensor;
@@ -15,30 +15,39 @@ interface DataType extends tf.TensorContainerObject {
 type NormalCSVDataset = tfData.Dataset<DataType> & tfData.CSVDataset;
 
 async function run() {
-  // We want to predict the column "medv", which represents a median value of a
-  // home (in $1000s), so we mark it as a label.
-  const csvDataset = tfData.csv(csvUrl, {
+  const trainingData = tfData.csv(trainingUrl, {
     columnConfigs: {
-      medv: {
+      diagnosis: {
         isLabel: true,
       },
     },
   }) as any as NormalCSVDataset;
 
-  console.log(await csvDataset.toArray());
+  console.log(await trainingData.toArray());
 
-  // Number of features is the number of column names minus one for the label
-  // column.
-  const numOfFeatures = (await csvDataset.columnNames()).length - 1;
-
-  // Prepare the Dataset for training.
-  const flattenedDataset = csvDataset
+  const convertedTrainingData = trainingData
     .map(({ xs, ys }) => {
-      // Convert xs(features) and ys(labels) from object form (keyed by column
-      // name) to array form.
       return { xs: Object.values(xs), ys: Object.values(ys) };
     })
     .batch(10);
+
+  const testingData = tfData.csv(testingUrl, {
+    columnConfigs: {
+      diagnosis: {
+        isLabel: true,
+      },
+    },
+  }) as any as NormalCSVDataset;
+
+  console.log(await testingData.toArray());
+
+  const convertedTestingData = testingData
+    .map(({ xs, ys }) => {
+      return { xs: Object.values(xs), ys: Object.values(ys) };
+    })
+    .batch(10);
+
+  const numOfFeatures = (await trainingData.columnNames()).length - 1;
 
   // Define the model.
   const model = tfLayers.sequential();
@@ -49,19 +58,23 @@ async function run() {
     })
   );
   model.compile({
-    optimizer: tf.train.sgd(0.000001),
-    loss: "meanSquaredError",
+    optimizer: tf.train.adam(0.06),
+    loss: "categoricalCrossentropy",
   });
 
-  // Fit the model using the prepared Dataset
-  return model.fitDataset(flattenedDataset, {
-    epochs: 10,
+  await model.fitDataset(convertedTrainingData, {
+    epochs: 100,
+    validationData: convertedTestingData,
     callbacks: {
       onEpochEnd: async (epoch, logs) => {
-        console.log(epoch, logs?.loss);
+        console.log(
+          "Epoch: " + epoch + " Loss: " + logs?.loss + " Accuracy: " + logs?.acc
+        );
       },
     },
   });
+  await model.save("downloads://my_model");
+  model.getWeights
 }
 
 run().then(() => console.log("Done"));
