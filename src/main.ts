@@ -63,12 +63,12 @@ async function run() {
   });
 
   await model.fitDataset(convertedTrainingData, {
-    epochs: 100,
+    epochs: 10,
     validationData: convertedTestingData,
     callbacks: {
       onEpochEnd: async (epoch, logs) => {
         console.log(
-          "Epoch: " + epoch + " Loss: " + logs?.loss + " Accuracy: " + logs?.acc
+          "Epoch: " + epoch + " Loss: " + logs?.loss
         );
       },
     },
