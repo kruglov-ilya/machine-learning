@@ -1,8 +1,8 @@
-import '@tensorflow/tfjs-backend-webgl';
+import "@tensorflow/tfjs-backend-webgl";
 
 import * as tf from "@tensorflow/tfjs-core";
 import * as tfData from "@tensorflow/tfjs-data";
-import * as tfLayers from "@tensorflow/tfjs-layers"
+import * as tfLayers from "@tensorflow/tfjs-layers";
 
 const csvUrl =
   "https://storage.googleapis.com/tfjs-examples/multivariate-linear-regression/data/boston-housing-train.csv";
@@ -11,6 +11,8 @@ interface DataType extends tf.TensorContainerObject {
   xs: tf.Tensor;
   ys: tf.Tensor;
 }
+
+type NormalCSVDataset = tfData.Dataset<DataType> & tfData.CSVDataset;
 
 async function run() {
   // We want to predict the column "medv", which represents a median value of a
@@ -21,7 +23,7 @@ async function run() {
         isLabel: true,
       },
     },
-  }) as any as tfData.Dataset<DataType> & tfData.CSVDataset;
+  }) as any as NormalCSVDataset;
 
   console.log(await csvDataset.toArray());
 
