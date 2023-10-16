@@ -74,7 +74,6 @@ async function run() {
     },
   });
   await model.save("downloads://my_model");
-  model.getWeights
 }
 
 run().then(() => console.log("Done"));
