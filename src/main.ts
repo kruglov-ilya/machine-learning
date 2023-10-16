@@ -23,10 +23,8 @@ async function run() {
     },
   }) as any as tfData.Dataset<DataType> & tfData.CSVDataset;
 
-  debugger;
-  console.log(csvDataset);
+  console.log(await csvDataset.toArray());
 
-  debugger;
   // Number of features is the number of column names minus one for the label
   // column.
   const numOfFeatures = (await csvDataset.columnNames()).length - 1;
@@ -39,10 +37,6 @@ async function run() {
       return { xs: Object.values(xs), ys: Object.values(ys) };
     })
     .batch(10);
-
-  console.log(csvDataset);
-
-  console.log(flattenedDataset);
 
   // Define the model.
   const model = tfLayers.sequential();
