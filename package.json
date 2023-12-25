@@ -16,6 +16,7 @@
     "@tensorflow/tfjs-backend-webgl": "4.12.0-rc.0",
     "@tensorflow/tfjs-core": "4.12.0-rc.0",
     "@tensorflow/tfjs-data": "4.12.0-rc.0",
-    "@tensorflow/tfjs-layers": "4.12.0-rc.0"
+    "@tensorflow/tfjs-layers": "4.12.0-rc.0",
+    "@tensorflow/tfjs-vis": "^1.5.1"
   }
 }
